@@ -1,0 +1,21 @@
+*{
+    margin: 0px;
+    padding: 0px;
+    box-sizing: border-box;
+}
+body{
+    background-color: antiquewhite;
+}
+canvas{
+   margin: auto;
+    border-color: black;
+    border-width: 2px;
+    border-style: solid;
+    display: block;
+
+}
+button{
+    display: flex;
+    margin: 20px auto ;
+
+}
