@@ -1,6 +1,22 @@
 const canvaswidth = 800;
 const canvasheight = 600;
-let start = Math.floor(Math.random()*4);
+let randomStartX = randomX();
+function randomX(){
+    let random_direction_x = Math.floor(Math.random()*2)
+    if (random_direction_x == 0){
+        random_direction_x = -1
+    }
+    return random_direction_x
+}
+let randomStartY =  randomY();
+function randomY(){
+    let random_direction_y = Math.floor(Math.random()*2)
+    if (random_direction_y == 0){
+        random_direction_y = -1
+    }
+    return random_direction_y
+}
+
 document.querySelector("canvas").width = canvaswidth;
 document.querySelector("canvas").height = canvasheight;
 let canvasCtx = document.querySelector("canvas").getContext("2d");
@@ -23,14 +39,12 @@ const ball= {
         x : 400 ,
         y : 350
     },
-    speed : 3,
-    directionX : (x)=>{
-        ball.position.x += x*ball.speed
-    },
-    directionY : (x)=>{
-        ball.position.y += x*ball.speed
-    }
+    speed : {
 
+        x: 3,
+        y: 3
+    } 
+   
     }
    
 
@@ -111,38 +125,14 @@ canvasCtx.restore();
 
 function moveBall(){
     
-    if(start == 0){
-   ball.directionX(-1);
-   ball.directionY(-1)
-    }else if(start == 1){
-   ball.directionX(+1);
-   ball.directionY(-1)
-    
-    }else if(start == 2){
-   ball.directionX(-1);
-   ball.directionY(+1)
-    
-    }else {
-     ball.directionX(+1);
-     ball.directionY(+1)
-
-    }
-    if(ball.position.x<=0 && start ==0){
-        start = 1
-    }else if(ball.position.x<=0 && start ==2){
-        start = 3}
-    else if(ball.position.x>=canvaswidth && start ==1){
-            start = 0
-    }else if(ball.position.x>=canvaswidth && start ==3){
-        start = 2
-    }else if(ball.position.y<=0 && start ==0){
-        start = 2}
-    else if(ball.position.y<=0 && start ==1){
-            start = 3}
-    else if(ball.position.y >= canvasheight && start ==2){
-                start = 0}
-    else if(ball.position.y >= canvasheight && start ==3){
-                    start = 1}
+    ball.position.x += randomStartX *ball.speed.x;
+    ball.position.y += randomStartY *ball.speed.y
+      
+if (ball.position.x >= canvaswidth || ball.position.x <= 0){
+    ball.speed.x *=-1
+}else if (ball.position.y <= 0 || ball.position.y >=canvasheight){
+    ball.speed.y *=-1
+}
             
     }
 
