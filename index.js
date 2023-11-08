@@ -1,5 +1,20 @@
 const canvaswidth = 800;
 const canvasheight = 600;
+var blocks =[];
+class Blocks{
+    constructor(x,y){
+        this.size = {width:80,height:30};
+        this.position = {x,y}
+    }
+
+}
+for(i=1;i<7;i++){
+    for(x=0;x<9;x++){
+        const block = new Blocks(10+100*x, i*40);
+        blocks.push(block);
+        
+    }
+}
 let randomStartX = randomX();
 function randomX(){
     let random_direction_x = Math.floor(Math.random()*2)
@@ -51,13 +66,7 @@ const ball= {
 
   
 
-class Blocks{
-    constructor(x,y){
-        this.size = {width:80,height:30};
-        this.position = {x,y}
-    }
 
-}
 
 canvasCtx.fillStyle = "black";
 function renderUserpaddle(){
@@ -89,17 +98,11 @@ function moveUserPaddle(){
 }
 function updateCanvas(){
     canvasCtx.clearRect(0,0,canvaswidth,canvasheight);
-    
     moveUserPaddle();
     createBlocks();
     createBall();
     moveBall();
      renderUserpaddle();
-    
-    
-    
-    
-   
 
 }
 setInterval(() =>{
@@ -107,14 +110,15 @@ setInterval(() =>{
 },20)
 
  function createBlocks(){
-    for(i=1;i<7;i++){
-        const blockrow = new Blocks(10, i*40);
-        canvasCtx.fillRect(blockrow.position.x,blockrow.position.y,blockrow.size.width,blockrow.size.height);
-    for(x=1;x<9;x++){
-        const blockcoloum = new Blocks(10+100*x, i*40)
-        canvasCtx.fillRect(blockcoloum.position.x,blockcoloum.position.y,blockcoloum.size.width,blockcoloum.size.height);
+    for(i=0;i<blocks.length;i++){
+        canvasCtx.fillRect(blocks[i].position.x,blocks[i].position.y,blocks[i].size.width,blocks[i].size.height);
+        if (topCollison(blocks[i])||bottomCollison(blocks[i])||leftCollison(blocks[i])||rightCollison(blocks[i])){
+            blocks.splice(i,1)
+        }
     }
-}}
+ }
+
+
 function createBall(){
     canvasCtx.save();
     canvasCtx.beginPath();
@@ -126,18 +130,27 @@ canvasCtx.restore();
 }
 
 function moveBall(){
-    
     ball.position.x += randomStartX *ball.speed.x;
     ball.position.y += randomStartY *ball.speed.y
-      
 if (ball.position.x >= canvaswidth || ball.position.x <= 0){
     ball.speed.x *=-1
 }else if (ball.position.y <= 0 || ball.position.y >=canvasheight){
     ball.speed.y *=-1
 }    
 
+if (topCollison(userpaddle)){
+    ball.speed.y *=-1
+}
+for(i=0;i<blocks.length;i++){
+    if (topCollison(blocks[i])||bottomCollison(blocks[i])){
+        ball.speed.y *=-1}
+        else if(leftCollison(blocks[i])||rightCollison(blocks[i])){
+            ball.speed.x *=-1
+        }
+    }
+}
+
 function collisonCheck(object){
-    
             return ball.position.x-ball.size< object.position.x+object.size.width&&
             ball.position.x +ball.size> object.position.x &&
             ball.position.y+ball.size > object.position.y &&
@@ -154,13 +167,5 @@ function rightCollison(object){
 }
 function leftCollison(object){
     return collisonCheck(object)&& ball.position.x+ball.size>=object.position.x
-}
-if (topCollison(userpaddle)){
-    ball.speed.y *=-1
-
-}
-
-
-
 }
 
