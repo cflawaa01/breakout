@@ -22,12 +22,12 @@ document.querySelector("canvas").height = canvasheight;
 let canvasCtx = document.querySelector("canvas").getContext("2d");
 let userpaddle = {
     size : {
-        height : 15 ,
+        height : 5 ,
         width : 110
 },
 position : {
     x : 345  ,
-    y : 510
+    y : 570
 },
 movingLeft : false,
 movingRight : false
@@ -41,8 +41,8 @@ const ball= {
     },
     speed : {
 
-        x: 3,
-        y: 3
+        x: 5,
+        y: 5
     } 
    
     }
@@ -88,11 +88,13 @@ function moveUserPaddle(){
 
 }
 function updateCanvas(){
-    canvasCtx.clearRect(0,0,canvaswidth,canvasheight)
+    canvasCtx.clearRect(0,0,canvaswidth,canvasheight);
+    
     moveUserPaddle();
-    renderUserpaddle();
+    createBlocks();
     createBall();
     moveBall();
+     renderUserpaddle();
     
     
     
@@ -104,15 +106,15 @@ setInterval(() =>{
     updateCanvas()
 },20)
 
-/* function createBlocks(){
+ function createBlocks(){
     for(i=1;i<7;i++){
         const blockrow = new Blocks(10, i*40);
         canvasCtx.fillRect(blockrow.position.x,blockrow.position.y,blockrow.size.width,blockrow.size.height);
-   /*  for (i=0;i<8;i++){
-        let newblock = new Blocks(i*100+10,50);
-        canvasCtx.fillRect(newblock.position.x,newblock.position.y,newblock.size.width,newblock.size.height)
-    } */
-
+    for(x=1;x<9;x++){
+        const blockcoloum = new Blocks(10+100*x, i*40)
+        canvasCtx.fillRect(blockcoloum.position.x,blockcoloum.position.y,blockcoloum.size.width,blockcoloum.size.height);
+    }
+}}
 function createBall(){
     canvasCtx.save();
     canvasCtx.beginPath();
@@ -132,7 +134,33 @@ if (ball.position.x >= canvaswidth || ball.position.x <= 0){
     ball.speed.x *=-1
 }else if (ball.position.y <= 0 || ball.position.y >=canvasheight){
     ball.speed.y *=-1
+}    
+
+function collisonCheck(object){
+    
+            return ball.position.x-ball.size< object.position.x+object.size.width&&
+            ball.position.x +ball.size> object.position.x &&
+            ball.position.y+ball.size > object.position.y &&
+            ball.position.y-ball.size< object.position.y+object.size.height
+        }
+function topCollison(object){
+    return collisonCheck(object)&& ball.position.y+ball.size>=object.position.y
 }
-            
-    }
+function bottomCollison(object){
+    return collisonCheck(object)&& ball.position.y-ball.size <=object.position.y+object.size.height
+}
+function rightCollison(object){
+    return collisonCheck(object)&& ball.position.x-ball.size<=object.position.x+object.size.width
+}
+function leftCollison(object){
+    return collisonCheck(object)&& ball.position.x+ball.size>=object.position.x
+}
+if (topCollison(userpaddle)){
+    ball.speed.y *=-1
+
+}
+
+
+
+}
 
