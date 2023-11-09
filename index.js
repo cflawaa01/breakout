@@ -1,6 +1,8 @@
 const canvaswidth = 800;
 const canvasheight = 600;
 var blocks =[];
+document.querySelector("canvas").width = canvaswidth;
+document.querySelector("canvas").height = canvasheight;
 class Blocks{
     constructor(x,y){
         this.size = {width:80,height:30};
@@ -15,7 +17,13 @@ for(i=1;i<7;i++){
         
     }
 }
+
 let randomStartX = randomX();
+document.querySelector("button").onclick =function(){ 
+  myInterval = setInterval(() =>{
+    updateCanvas()
+},20)};
+
 function randomX(){
     let random_direction_x = Math.floor(Math.random()*2)
     if (random_direction_x == 0){
@@ -32,8 +40,7 @@ function randomY(){
     return random_direction_y
 }
 
-document.querySelector("canvas").width = canvaswidth;
-document.querySelector("canvas").height = canvasheight;
+
 let canvasCtx = document.querySelector("canvas").getContext("2d");
 let userpaddle = {
     size : {
@@ -103,11 +110,18 @@ function updateCanvas(){
     createBall();
     moveBall();
      renderUserpaddle();
-
+     if(ball.position.y+ball.size >=canvasheight) {
+        alert("You lose");
+        clearInterval(myInterval);
+        location.reload();
+    }
+    if(blocks.length==0){
+        alert("Nice one!");
+        clearInterval(myInterval);
+        location.reload();
+    }
 }
-setInterval(() =>{
-    updateCanvas()
-},20)
+
 
  function createBlocks(){
     for(i=0;i<blocks.length;i++){
@@ -132,11 +146,11 @@ canvasCtx.restore();
 function moveBall(){
     ball.position.x += randomStartX *ball.speed.x;
     ball.position.y += randomStartY *ball.speed.y
-if (ball.position.x >= canvaswidth || ball.position.x <= 0){
+if (ball.position.x+ball.size >= canvaswidth || ball.position.x-ball.size <= 0){
     ball.speed.x *=-1
-}else if (ball.position.y <= 0 || ball.position.y >=canvasheight){
+}else if (ball.position.y-ball.size <= 0 ){
     ball.speed.y *=-1
-}    
+}  
 
 if (topCollison(userpaddle)){
     ball.speed.y *=-1
@@ -157,10 +171,10 @@ function collisonCheck(object){
             ball.position.y-ball.size< object.position.y+object.size.height
         }
 function topCollison(object){
-    return collisonCheck(object)&& ball.position.y+ball.size>=object.position.y
+    return collisonCheck(object)&& ball.position.y+ball.size-object.position.y<=3
 }
 function bottomCollison(object){
-    return collisonCheck(object)&& ball.position.y-ball.size <=object.position.y+object.size.height
+    return collisonCheck(object)&& ball.position.y-ball.size -object.position.y-object.size.height>=-3
 }
 function rightCollison(object){
     return collisonCheck(object)&& ball.position.x-ball.size<=object.position.x+object.size.width
@@ -168,4 +182,3 @@ function rightCollison(object){
 function leftCollison(object){
     return collisonCheck(object)&& ball.position.x+ball.size>=object.position.x
 }
-
